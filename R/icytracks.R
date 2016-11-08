@@ -34,7 +34,7 @@ read.icy.track.xls <- function(file) {
 
 readIcyXlsData <- function(file) {
   # Read in data, remove first column (which contains the "track #")
-  xls_data <- gdata::read.xls(file, header = F) %>% select_(-1)
+  xls_data <- gdata::read.xls(file, header = F, stringsAsFactors=F) %>% select_(-1)
   # Give sensible names
   names(xls_data) <- c('track', 't', 'x', 'y', 'z' )
   xls_data
@@ -67,6 +67,7 @@ getTrackDF <- function(xls_data, track_bounds) {
     t$track <- x$track
     t
   }))
-  # Bind list together to get the DF
-  bind_rows(track_df_l)
+  # Bind list together to get the DF, then convert to data matrix (make numeric),
+  # then back to DF
+  as.data.frame(data.matrix(bind_rows(track_df_l)))
 }
